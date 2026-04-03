@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+<channel>
+  <title>Minxie's Digital Garden</title>
+  <link>https://minxie.likesyou.org</link>
+  <description>Updates from my corner of the web and the Tism-Webring.</description>
+  <language>en-us</language>
+  
+  <atom:link href="https://minxie.likesyou.org/feed.xml" rel="self" type="application/rss+xml" />
+
+  <item><title>Sad news: I have to block Dach region visitors!</title><link>https://minxie.likesyou.org/webring/rsshub.php</link><description>Today i decided to go against german laws, i had the hard descission of either: giving my address out to ANYONE, OR i would stop serving the DACH region.. (DE,A,CH). after a long thinking period i opted for the latter.. my site now serves everyone BUT Dach members. you can still circumvent that with a VPN, it will set a cookie that expires after a year, so after logging in oce you will not need the vpn again for a whole year.. this was a hard descicion to make.. "what about me? what am i supposed to do?" i have a whitelist on my server, you can write me an email if you are subject to the regionlock and i am more than happy to add you to the list! -Minx</description><pubDate>Fri, 03 Apr 2026 16:05:36 GMT</pubDate><guid isPermaLink="false">-1775225136.43081</guid></item><item><title>test title</title><link>https://testlink.com</link><description>test description 123</description><pubDate>Fri, 27 Mar 2026 17:07:16 GMT</pubDate><guid isPermaLink="false">https://testlink.com-1774627636.473933</guid></item><item>
+    <title>Launched the Webring Community Hub!</title>
+    <link>https://minxie.likesyou.org/webring/rsshub.php</link>
+    <description>I've finally finished the PHP aggregator for our webring. Now everyone can see each other's latest posts in one place.</description>
+    <pubDate>Sat, 28 Mar 2026 12:00:00 GMT</pubDate>
+    <guid isPermaLink="false">https://minxie.likesyou.org/webring/rsshub.php-item-1</guid>
+  </item>
+
+  <item>
+    <title>Hello World from Arch Linux</title>
+    <link>https://minxie.likesyou.org/post-arch</link>
+    <description>Just a quick update about my current KDE setup and some new scripts I wrote.</description>
+    <pubDate>Fri, 27 Mar 2026 10:00:00 GMT</pubDate>
+    <guid isPermaLink="false">https://minxie.likesyou.org/post-arch-item-0</guid>
+  </item>
+
+</channel>
+</rss>
