@@ -136,7 +136,6 @@
             
             try {
                 let rawXml = null;
-                // Auto-fix GitHub URLs if extension is missing
                 let finalUrl = url;
                 if (url.includes("github.io") && !url.toLowerCase().endsWith(".xml")) {
                     finalUrl = url.endsWith("/") ? url + "feed.xml" : url + "/feed.xml";
@@ -167,37 +166,51 @@
         }
 
         function renderFeed(xml) {
-            const items = xml.querySelectorAll("item, entry");
+            const itemsNodeList = xml.querySelectorAll("item, entry");
+            let itemsArray = Array.from(itemsNodeList).map(item => {
+                const title = item.querySelector("title")?.textContent || "Untitled";
+                const link = item.querySelector("link")?.getAttribute("href") || item.querySelector("link")?.textContent || "#";
+                const dateStr = item.querySelector("pubDate, published, updated")?.textContent || "";
+                let description = item.querySelector("description, summary, content")?.textContent || "";
+                
+                // Sanitize scripts
+                description = description.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").trim();
+                
+                const dateObj = new Date(dateStr);
+                
+                return {
+                    title,
+                    link,
+                    date: dateObj,
+                    dateLabel: isNaN(dateObj) ? dateStr : dateObj.toLocaleDateString(),
+                    description
+                };
+            });
+
+            // Sort by date (Newest First)
+            itemsArray.sort((a, b) => b.date - a.date);
+
             let html = ``;
 
-            if (items.length === 0) {
+            if (itemsArray.length === 0) {
                 html += `<div class="text-center py-10 text-slate-400 text-xs">No items found.</div>`;
             }
 
-            items.forEach(item => {
-                const title = item.querySelector("title")?.textContent || "Untitled";
-                const link = item.querySelector("link")?.getAttribute("href") || item.querySelector("link")?.textContent || "#";
-                const pubDate = item.querySelector("pubDate, published, updated")?.textContent || "";
-                let description = item.querySelector("description, summary, content")?.textContent || "";
-                description = description.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").trim();
-
-                const dateObj = new Date(pubDate);
-                const displayDate = isNaN(dateObj) ? pubDate : dateObj.toLocaleDateString();
-
+            itemsArray.forEach(item => {
                 if (isCompact) {
                     html += `
-                        <a href="${link}" target="_blank" class="block p-3 hover:bg-slate-50 dark:hover:bg-zinc-900 border-l-2 border-transparent hover:border-blue-600 transition-all">
-                            <time class="text-[9px] text-slate-400 font-bold uppercase block">${displayDate}</time>
-                            <h3 class="text-xs font-bold leading-tight mt-0.5">${title}</h3>
+                        <a href="${item.link}" target="_blank" class="block p-3 hover:bg-slate-50 dark:hover:bg-zinc-900 border-l-2 border-transparent hover:border-blue-600 transition-all">
+                            <time class="text-[9px] text-slate-400 font-bold uppercase block">${item.dateLabel}</time>
+                            <h3 class="text-xs font-bold leading-tight mt-0.5">${item.title}</h3>
                         </a>
                     `;
                 } else {
                     html += `
                         <article class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm mb-3">
-                            <time class="text-[9px] text-blue-600 font-black uppercase mb-1 block">${displayDate}</time>
-                            <a href="${link}" target="_blank" class="text-sm font-bold hover:text-blue-600 transition-colors block mb-2">${title}</a>
-                            <div class="prose dark:prose-invert text-[11px] text-slate-500 line-clamp-3">
-                                ${description}
+                            <time class="text-[9px] text-blue-600 font-black uppercase mb-1 block">${item.dateLabel}</time>
+                            <a href="${item.link}" target="_blank" class="text-base font-bold leading-tight hover:text-blue-600 transition-colors block mb-2">${item.title}</a>
+                            <div class="prose dark:prose-invert text-[12px] leading-relaxed text-slate-600 dark:text-zinc-400">
+                                ${item.description || 'No description provided.'}
                             </div>
                         </article>
                     `;
