@@ -3,67 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streamline RSS | Reader</title>
+    <title>Streamline RSS | Widget</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .prose img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1.5rem 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
+
+        .prose img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; }
         .prose a { color: #2563eb; text-decoration: underline; font-weight: 500; }
-        .prose p { margin-bottom: 1.25rem; line-height: 1.6; }
-        .feed-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .feed-card:hover { transform: translateY(-2px); }
+        .feed-card { transition: transform 0.2s ease; }
+        
+        #feedContent { min-height: 200px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen dark:bg-zinc-950 dark:text-zinc-100">
+<body class="bg-white text-slate-900 dark:bg-zinc-950 dark:text-zinc-100">
 
-    <div class="max-w-4xl mx-auto px-4 py-8">
-        <header class="mb-10">
-            <div class="flex items-center justify-between mb-8">
-                <h1 class="text-2xl font-black tracking-tighter flex items-center gap-2">
-                    <span class="bg-blue-600 text-white p-1 rounded">RSS</span>
-                    STREAMLINE
+    <div class="w-full max-w-full px-2 py-4">
+        <header class="mb-6 px-2">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-lg font-black tracking-tighter flex items-center gap-1">
+                    <span class="bg-blue-600 text-white px-1 rounded text-sm">RSS</span>
+                    WIDGET
                 </h1>
-                <div id="status" class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Ready</div>
+                <div id="status" class="text-[9px] font-mono uppercase tracking-widest text-slate-400">Ready</div>
             </div>
             
-            <div class="bg-white dark:bg-zinc-900 shadow-xl rounded-2xl border border-slate-200 dark:border-zinc-800 p-3">
-                <div class="flex flex-col sm:flex-row gap-2">
+            <div class="bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800 p-2 shadow-sm">
+                <div class="flex gap-1">
                     <input 
                         type="text" 
                         id="rssUrl" 
-                        placeholder="Enter Feed XML URL..." 
-                        class="flex-1 px-4 py-3 bg-transparent outline-none text-sm font-medium"
+                        placeholder="Feed URL..." 
+                        class="flex-1 px-3 py-1.5 bg-transparent outline-none text-xs font-medium w-full"
                         value="https://minxify.github.io/rss/feed.xml"
                     >
                     <button 
                         onclick="fetchFeed()" 
                         id="fetchBtn"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm shadow-lg shadow-blue-500/20"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-bold transition-all active:scale-95 text-[10px] uppercase tracking-wider whitespace-nowrap"
                     >
-                        Fetch Articles
+                        Sync
                     </button>
                 </div>
             </div>
             
-            <div class="mt-4 flex flex-wrap justify-center gap-6">
-                <label class="flex items-center text-xs font-semibold text-slate-500 cursor-pointer hover:text-blue-600 transition-colors">
-                    <input type="checkbox" id="useProxy" checked class="mr-2 accent-blue-600"> Use CORS Proxy
+            <div class="mt-3 flex items-center justify-between px-1">
+                <label class="flex items-center text-[10px] font-semibold text-slate-400 cursor-pointer hover:text-blue-600">
+                    <input type="checkbox" id="useProxy" checked class="mr-1.5 accent-blue-600"> Use Proxy
                 </label>
-                <div class="text-xs font-semibold text-slate-400">
-                    Host: <span class="text-blue-600">GitHub Pages</span>
-                </div>
+                <button onclick="toggleCompact()" class="text-[10px] font-bold text-slate-400 uppercase hover:text-blue-600">
+                    Toggle Style
+                </button>
             </div>
         </header>
 
-        <main id="feedContent" class="space-y-6">
-            <div class="text-center py-20 text-slate-400">
-                <p>Loading your feed...</p>
+        <main id="feedContent" class="space-y-3">
+            <div class="flex flex-col items-center justify-center py-10 text-slate-300">
+                <svg class="w-8 h-8 animate-pulse mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <p class="text-[10px] uppercase tracking-widest">Awaiting Sync...</p>
             </div>
         </main>
+        
+        <footer class="mt-8 py-4 border-t border-slate-100 dark:border-zinc-900 text-center">
+            <p class="text-[9px] text-slate-400 font-medium uppercase tracking-widest">Streamline RSS Widget</p>
+        </footer>
     </div>
 
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 transform translate-y-20 opacity-0 transition-all duration-500 bg-zinc-900 text-white px-6 py-3 rounded-2xl shadow-2xl text-sm font-medium flex items-center gap-3 border border-zinc-700 z-50">
+    <div id="toast" class="fixed bottom-4 left-4 right-4 translate-y-20 opacity-0 transition-all duration-500 bg-zinc-900 text-white px-4 py-2 rounded-lg shadow-xl text-[10px] font-bold flex items-center justify-center border border-zinc-700 z-50">
         <span id="toastMsg"></span>
     </div>
 
@@ -73,111 +89,89 @@
         const fetchBtn = document.getElementById('fetchBtn');
         const toast = document.getElementById('toast');
         const toastMsg = document.getElementById('toastMsg');
+        let isCompact = false;
+
+        function toggleCompact() {
+            isCompact = !isCompact;
+            if (window.lastXml) renderFeed(window.lastXml);
+            showToast(isCompact ? "List View" : "Card View");
+        }
 
         function showToast(msg, isError = false) {
             toastMsg.textContent = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.toggle('border-red-500', isError);
-            toast.classList.toggle('text-red-400', isError);
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
         }
 
         async function tryFetch(url, proxyIndex = 0) {
-            // Ensure URL ends in .xml if it's a GitHub pages URL missing the file
-            if (url.includes("github.io") && !url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith(".rss")) {
-                url = url.endsWith("/") ? url + "feed.xml" : url + "/feed.xml";
-                document.getElementById('rssUrl').value = url;
-            }
-
             const proxies = [
                 (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
                 (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
                 (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
-                (u) => u // Direct
+                (u) => u
             ];
 
             const useProxy = document.getElementById('useProxy').checked;
             let targetUrl = useProxy ? proxies[proxyIndex](url) : url;
             
             const response = await fetch(targetUrl);
-            
-            if (response.status === 403) {
-                throw new Error("403 Forbidden: GitHub is blocking this request. Try toggling the proxy or check if 'feed.xml' exists in your repo.");
-            }
-            
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
             const data = await response.json().catch(() => null);
             let content = data && data.contents ? data.contents : await response.text();
 
             if (content.includes("aes.js") || content.includes("slowAES")) {
-                throw new Error("Target site is blocking with an AES Challenge.");
+                throw new Error("Target blocked (AES Challenge)");
             }
-
             return content;
         }
 
         async function fetchFeed() {
             const url = document.getElementById('rssUrl').value.trim();
-            if (!url) return showToast("Enter a URL first", true);
+            if (!url) return;
 
             fetchBtn.disabled = true;
-            fetchBtn.innerHTML = `Fetching...`;
-            statusEl.textContent = "Loading...";
+            statusEl.textContent = "Syncing...";
             
             try {
                 let rawXml = null;
-                let lastError = null;
-
-                // Try up to 3 different proxies before giving up
-                for(let i = 0; i < 3; i++) {
-                    try {
-                        rawXml = await tryFetch(url, i);
-                        if (rawXml) break;
-                    } catch (e) {
-                        lastError = e;
-                        console.warn(`Proxy ${i} failed, trying next...`);
-                    }
+                // Auto-fix GitHub URLs if extension is missing
+                let finalUrl = url;
+                if (url.includes("github.io") && !url.toLowerCase().endsWith(".xml")) {
+                    finalUrl = url.endsWith("/") ? url + "feed.xml" : url + "/feed.xml";
                 }
 
-                if (!rawXml) throw lastError || new Error("All fetch methods failed.");
+                for(let i = 0; i < 4; i++) {
+                    try {
+                        rawXml = await tryFetch(finalUrl, i);
+                        if (rawXml) break;
+                    } catch (e) { console.warn(`Proxy ${i} failed`); }
+                }
+
+                if (!rawXml) throw new Error("Connection failed");
 
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(rawXml, "text/xml");
-
-                if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
-                    throw new Error("Unable to parse XML. Make sure the file on GitHub is a valid RSS/XML file.");
-                }
+                window.lastXml = xmlDoc;
 
                 renderFeed(xmlDoc);
                 statusEl.textContent = "Live";
             } catch (error) {
-                console.error(error);
                 statusEl.textContent = "Error";
                 showToast(error.message, true);
-                feedContent.innerHTML = `<div class="text-center py-20 text-red-500 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-200 dark:border-red-900/30 p-8">
-                    <p class="font-bold">Fetch Failed (403/Forbidden)</p>
-                    <p class="text-sm mt-2">${error.message}</p>
-                    <p class="text-xs mt-4 text-slate-500 italic">Tip: Ensure your file is named exactly 'feed.xml' and is in the 'rss' folder on GitHub.</p>
-                </div>`;
+                feedContent.innerHTML = `<div class="text-center py-10 text-red-500 text-[10px] font-bold">UNABLE TO REACH FEED</div>`;
             } finally {
                 fetchBtn.disabled = false;
-                fetchBtn.textContent = "Fetch Articles";
             }
         }
 
         function renderFeed(xml) {
             const items = xml.querySelectorAll("item, entry");
-            const channelTitle = xml.querySelector("channel > title, feed > title")?.textContent || "RSS Feed";
-            
-            let html = `<div class="flex items-center gap-4 mb-8">
-                <div class="h-[2px] flex-1 bg-slate-200 dark:bg-zinc-800"></div>
-                <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">${channelTitle}</h2>
-                <div class="h-[2px] flex-1 bg-slate-200 dark:bg-zinc-800"></div>
-            </div>`;
+            let html = ``;
 
             if (items.length === 0) {
-                html += `<div class="text-center py-20 text-slate-400">The XML file was found, but it contains no articles.</div>`;
+                html += `<div class="text-center py-10 text-slate-400 text-xs">No items found.</div>`;
             }
 
             items.forEach(item => {
@@ -190,20 +184,24 @@
                 const dateObj = new Date(pubDate);
                 const displayDate = isNaN(dateObj) ? pubDate : dateObj.toLocaleDateString();
 
-                html += `
-                    <article class="feed-card bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm mb-6">
-                        <header class="mb-4">
-                            <time class="text-[10px] text-blue-600 font-bold uppercase tracking-widest block mb-1">${displayDate}</time>
-                            <a href="${link}" target="_blank" class="text-xl font-bold hover:text-blue-600 transition-colors">${title}</a>
-                        </header>
-                        <div class="prose dark:prose-invert text-slate-600 dark:text-zinc-400 text-sm line-clamp-4">
-                            ${description || 'No description provided.'}
-                        </div>
-                        <footer class="mt-6">
-                             <a href="${link}" target="_blank" class="text-xs font-black text-blue-600 uppercase tracking-widest">Read More →</a>
-                        </footer>
-                    </article>
-                `;
+                if (isCompact) {
+                    html += `
+                        <a href="${link}" target="_blank" class="block p-3 hover:bg-slate-50 dark:hover:bg-zinc-900 border-l-2 border-transparent hover:border-blue-600 transition-all">
+                            <time class="text-[9px] text-slate-400 font-bold uppercase block">${displayDate}</time>
+                            <h3 class="text-xs font-bold leading-tight mt-0.5">${title}</h3>
+                        </a>
+                    `;
+                } else {
+                    html += `
+                        <article class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm mb-3">
+                            <time class="text-[9px] text-blue-600 font-black uppercase mb-1 block">${displayDate}</time>
+                            <a href="${link}" target="_blank" class="text-sm font-bold hover:text-blue-600 transition-colors block mb-2">${title}</a>
+                            <div class="prose dark:prose-invert text-[11px] text-slate-500 line-clamp-3">
+                                ${description}
+                            </div>
+                        </article>
+                    `;
+                }
             });
             feedContent.innerHTML = html;
         }
